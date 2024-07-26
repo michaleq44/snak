@@ -1,5 +1,9 @@
+use std::fs;
+use std::path::Path;
 use macroquad::prelude::*;
-use std::env;
+use json::*;
+use std::fs::File;
+use std::io;
 
 struct Vec2 {
     x: f32,
@@ -7,11 +11,20 @@ struct Vec2 {
 }
 
 #[macroquad::main("snak")]
-async fn main() {
-    let mut snaks: Vec<Vec2> = vec![Vec2 {x: 1.0, y: 0.0}];
+async fn main() -> std::io::Result<()> {
+    let mut snaks: Vec<Vec2> = vec![Vec2 {x: 1., y: 0.}];
     let mut dt: f32 = 0.0;
+    snaks.push(Vec2 {x: 2., y: 0.});
     
-    println!("{}", env::consts::OS);
+    if !Path::new(".config").exists() {
+        assert!(!fs::create_dir(".config").is_err(), "Cannot access filesystem");
+    }
+    if !Path::new(".config/conf.json").exists() {
+        assert!(!fs::write(".config/conf.json", "{\"fps\": 20}").is_err(), "Cannot access filesystem");
+    }
+    let cont = fs::read_to_string(".config/conf.json")?;
+    let parsed = parse(&cont).unwrap();
+    println!("{}", parsed["fps"]);
     loop {
         clear_background(BLACK);
         if is_key_down(KeyCode::W) {
