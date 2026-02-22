@@ -90,6 +90,17 @@ async fn main() -> std::io::Result<()> {
                 _ => panic!(),
             };
             snaks.push(Vec2 {x: snaks[snaks.len()-1].x + mov.x, y: snaks[snaks.len()-1].y + mov.y});
+            let lastidx = snaks.len()-1;
+            if snaks[lastidx].x == 50. {
+                snaks[lastidx].x = 0.;
+            } else if snaks[lastidx].x == -1. {
+                snaks[lastidx].x = 49.;
+            }
+            if snaks[lastidx].y == 50. {
+                snaks[lastidx].y = 0.;
+            } else if snaks[lastidx].y == -1. {
+                snaks[lastidx].y = 49.
+            }
             for i in 0..avail.len()-1 {
                 if avail[i] == snaks[snaks.len()-1] {
                     avail.remove(i);
